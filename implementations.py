@@ -5,7 +5,6 @@ from losses_gradients import compute_loss_ls, compute_gradient_least_squares, co
 
 def least_squares_GD(y, tx, w_initial, max_iters, gamma):
     """Gradient descent algorithm with least squares."""
-    """Required by project description"""
     w = w_initial
     for n_iter in range(max_iters):
         # compute gradient and error
@@ -18,9 +17,9 @@ def least_squares_GD(y, tx, w_initial, max_iters, gamma):
     loss = compute_loss_ls(y, tx, w)           
     return w, loss
 
+
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     """Stochastic Gradient Descent algorithm with least squares."""
-    """Required by project description"""
     w = initial_w
     batch_size = 1
     
@@ -35,19 +34,19 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     return w, loss
 
 def least_squares(y, tx):
-    """Compute the optimal w and the loss with least square technique"""
-    """Required by project description"""
+    """Compute the optimal w and the loss with least squares technique"""
     a = tx.T.dot(tx) 
     b = tx.T.dot(y)
     w = np.linalg.solve(a, b)                #p.7 du cours least squares
     loss = compute_loss_ls(y, tx, w)                 #p.3 du cours least squares
     return w, loss
 
+
+
 # Je suis un peu confuse. Est ce que ce qu'il veut c'est ça ou bien ce que j'ai fait aux fonctions ridge_GD et ridge_SGD ?? 
 # ridge_GD et ridge_SGD sont juste en-dessous
 def ridge_regression(y, tx, lambda_):
-    """Ridge regression."""
-    """Required by project description"""
+    """Compute Ridge regression."""
     lambd = 2 * tx.shape[0] * lambda_
     a = tx.T.dot(tx) + lambd * np.identity(tx.shape[1])
     b = tx.T.dot(y) 
@@ -56,8 +55,7 @@ def ridge_regression(y, tx, lambda_):
     return w, loss
 
 def ridge_GD(y, tx, initial_w, max_iters, gamma, lambda_):
-    """Gradient descent algorithm with Ridge."""
-    """Not required specifically""" 
+    """Gradient descent algorithm with Ridge regression."""
     w = initial_w
     for n_iter in range(max_iters):
         # compute gradient and error
@@ -72,7 +70,6 @@ def ridge_GD(y, tx, initial_w, max_iters, gamma, lambda_):
 
 def ridge_SGD(y, tx, initial_w, max_iters, gamma, lambda_):
     """Stochastic Gradient Descent algorithm with least squares."""
-    """Not required specifically""" #Implicitely requested I think
     w = initial_w
     batch_size = 1
     
@@ -85,17 +82,40 @@ def ridge_SGD(y, tx, initial_w, max_iters, gamma, lambda_):
             # calculate loss
     loss = compute_loss_ridge(y, tx, initial_w, lambda_) 
     return w, loss
-'''
-def logistic_regression(y,tx,initial_w,max_iters,gamma)
 
-    return w,loss
 
-def reg_logistic_regression(y,tx,lambda_,initial_w,max_iters,gamma)
+def logistic_regression(y, tx, initial_w, max_iters, gamma): #SGD  (GD easy to implement from here)
+    """Stochastic Gradient Descent algorithm with logistic regression."""
+    w = initial_w
 
-    return w,loss
-'''
+    for n_iter in range(max_iters):
+        for y_batch, tx_batch in batch_iter(y, tx, batch_size=batch_size, num_batches=1):
+            # compute a stochastic gradient
+            grad = compute_logreg_grad(y_batch, tx_batch, w)
+            # update w through the stochastic gradient update
+            w = w - gamma * grad
+            # compute a stochastic loss
+            loss = compute_logreg_loss(y_batch, tx_batch, w)
+    return w, loss
 
-#besoin pour SGD, prise de lab02
+
+def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
+    """Stochastic Gradient Descent algorithm with REGULARIZED logistic regression."""
+    """Required by project description"""
+    w = initial_w
+
+    for n_iter in range(max_iters):
+        for y_batch, tx_batch in batch_iter(y, tx, batch_size=batch_size, num_batches=1):
+            # compute a stochastic gradient
+            grad = compute_logreg_reg_grad(y_batch, tx_batch, w, lambda_)
+            # update w through the stochastic gradient update
+            w = w - gamma * grad
+            # compute a stochastic loss
+            loss = compute_logreg_reg_loss(y_batch, tx_batch, w, lambda_)
+    return w, loss
+
+
+#Taken from lab02 of ML course
 def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
     """
     Generate a minibatch iterator for a dataset.

@@ -14,5 +14,6 @@ def standardize_test(x, mean, std):
     return (x-mean)/std
 
 def add_bias(x):
+    '''add column vector of one for bias'''
     vect_one = np.ones([x.shape[0],1])
     return np.concatenate((vect_one, x), axis = 1)

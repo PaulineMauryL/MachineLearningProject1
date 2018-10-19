@@ -20,8 +20,10 @@ def plot_train_test(train_errors, test_errors, gammas):
     ax.plot(gammas, train_errors, gammas, test_errors)
 
     ax.set(xlabel='Learning rate', ylabel='Loss',
-           title='Learning rate on loss error (max_iter = 1000)')
+           title='Learning rate on loss error (max_iter = 200)')
     ax.grid()
-
-    #fig.savefig("test.png")
+    
+    plt.ylim((0, 5))
+    
+    fig.savefig("ls_200iter_gamma03_only999removed.png")
     plt.show()

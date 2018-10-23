@@ -1,23 +1,54 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from other import batch_iter
+from proj1_helpers import load_csv_data, predict_labels, create_csv_submission
 
+# -----------------------------------------------------------
+# --------------------Least squares -------------------------
+# Common functions
+def compute_gradient_least_squares(y, tx, w):
+    """Compute the gradient of least square."""
+    err = y - w.dot(tx.T)
+    grad = -tx.T.dot(err)/len(err)
+    return grad 
+
+def compute_loss_ls(y, tx, w):
+    """Calculate the loss of least squares."""
+    #e = y - tx.dot(w)
+    y_pred = predict_labels(w, tx)
+    accuracy = sum(y_pred == y)/len(y)
+    #return (1/2)*np.mean(e**2)
+    return accuracy
+
+# Least squares
+def least_squares(y, tx):
+    """Compute the optimal w and the loss with least squares technique"""
+    a = tx.T.dot(tx) 
+    b = tx.T.dot(y)
+    w = np.linalg.solve(a, b)                #p.7 du cours least squares
+    loss = compute_loss_ls(y, tx, w)                 #p.3 du cours least squares
+    return w, loss
+
+# Gradient descent least squares
 def least_squares_GD(y, tx, w_initial, max_iters, gamma):
     """Gradient descent algorithm with least squares."""
     w = w_initial
     for n_iter in range(max_iters):
         # compute gradient and error
-        #print("y {}".format(y))
         grad = compute_gradient_least_squares(y, tx, w)
-        #print(grad)
         # gradient w by descent update
+        #loss1=compute_loss_ls(y,tx,w)
         w = w - (gamma * grad)
-        # print(w)
-        # calculate loss    
-    loss = compute_loss_ls(y, tx, w)           
+        #loss2=compute_loss_ls(y,tx,w)
+        #if (np.absolute(loss1-loss2)/loss1)<1e-6:
+            #print((loss1-loss2))
+            #break
+    # calculate loss    
+    loss = compute_loss_ls(y, tx, w)  
+    print(n_iter)
     return w, loss
 
-
+# Stochactic gradient descent least squares
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     """Stochastic Gradient Descent algorithm with least squares."""
     w = initial_w
@@ -33,13 +64,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     loss = compute_loss_ls(y, tx, w)                                 #TO CHECK p.3 least squares
     return w, loss
 
-def least_squares(y, tx):
-    """Compute the optimal w and the loss with least squares technique"""
-    a = tx.T.dot(tx) 
-    b = tx.T.dot(y)
-    w = np.linalg.solve(a, b)                #p.7 du cours least squares
-    loss = compute_loss_ls(y, tx, w)                 #p.3 du cours least squares
-    return w, loss
+
 
 
 
@@ -117,23 +142,10 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
 
 
 
-def compute_loss_ls(y, tx, w):
-    """Calculate the loss of least squares."""
-    e = y - tx.dot(w)
-    #print(e)
-    return (1/2)*np.mean(e**2)
 
 
-def compute_gradient_least_squares(y, tx, w):
-    """Compute the gradient of least square."""
-    #print(y.shape)
-    #print(tx.shape)
-    #print(w.shape)
-    err = y - w.dot(tx.T) #tx.dot(w)
-    #print(err)
-    #print(err.shape)
-    grad = -tx.T.dot(err)/len(err)         #p.5 du cours least squares
-    return grad                  
+
+                
 
 
 def compute_loss_ridge(y, tx, w, lambda_):

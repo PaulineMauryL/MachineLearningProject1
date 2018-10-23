@@ -10,6 +10,20 @@ def remove_999(input_train, y_train):
     
     return  x_train_no_999, y_train_no_999
 
+def remove_999col(input_train,input_test):
+    idx = np.isin(input_train, -999.0)
+    idx = np.any(idx,axis=0)
+    ind = np.nonzero(idx)[0]
+    
+    x_train_no_999col = np.delete(input_train,ind,axis=1)
+    x_test_no_999col = np.delete(input_test,ind,axis=1)
+    
+    return  x_train_no_999col, x_test_no_999col
+
+def replace_999(input_train):
+    idx = np.isin(input_train, -999.0)
+    input_train[idx] = 0
+    return input_train
 
 #Taken from lab02 of ML course
 def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):

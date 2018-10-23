@@ -9,7 +9,7 @@ from proj1_helpers import load_csv_data, predict_labels, create_csv_submission
 def compute_gradient_least_squares(y, tx, w):
     """Compute the gradient of least square."""
     err = y - w.dot(tx.T)
-    grad = -tx.T.dot(err)/len(err)
+    grad = tx.T.dot(err)/len(err)
     return grad 
 
 def compute_loss_ls(y, tx, w):

@@ -14,11 +14,11 @@ def compute_gradient_least_squares(y, tx, w):
 
 def compute_loss_ls(y, tx, w):
     """Calculate the loss of least squares."""
-    #e = y - tx.dot(w)
-    y_pred = predict_labels(w, tx)
-    accuracy = sum(y_pred == y)/len(y)
-    #return (1/2)*np.mean(e**2)
-    return accuracy
+    e = y - tx.dot(w)
+    #y_pred = predict_labels(w, tx)
+    #accuracy = sum(y_pred == y)/len(y)
+    return (1/2)*np.mean(e**2)
+    #return accuracy
 
 # Least squares
 def least_squares(y, tx):

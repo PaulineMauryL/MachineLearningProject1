@@ -71,7 +71,9 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     batch_size = 1
     
     for n_iter in range(max_iters):
-        for y_batch, tx_batch in batch_iter(y, tx, batch_size=batch_size, num_batches=1):
+        #print("boucle d'iteration")
+        for y_batch, tx_batch in batch_iter(y, tx, batch_size, 10,False):
+            #print("boucle de batch")
             # compute a stochastic gradient and loss
             grad = compute_gradient_least_squares(y_batch, tx_batch, w)
             # update w through the stochastic gradient update
@@ -87,7 +89,6 @@ def ls_sgd_hyperparam(gammas, nb_fold, max_iters,x_train, y_train, w_initial):
     nb_elem = math.floor(x_train.shape[0]/nb_fold)
     
     for i, gamma in enumerate(gammas):
-        print(i)
         for k in range(nb_fold):
             x_valid_k = x_train[k*nb_elem:(k+1)*nb_elem][:]  
             y_valid_k = y_train[k*nb_elem:(k+1)*nb_elem]
@@ -98,8 +99,10 @@ def ls_sgd_hyperparam(gammas, nb_fold, max_iters,x_train, y_train, w_initial):
             w, loss_tr = least_squares_SGD(y_train_k, x_train_k, w_initial, max_iters, gamma)
             loss_train[i][k] = loss_tr
             loss_valid[i][k] = compute_loss_ls(y_valid_k, x_valid_k, w)
-            
-    return loss_valid, loss_train,w
+    
+    ltrain = np.mean(loss_train, axis=1)
+    lvalid = np.mean(loss_valid, axis=1)
+    return lvalid, ltrain,w
 
 
 # -----------------------------------------------------------

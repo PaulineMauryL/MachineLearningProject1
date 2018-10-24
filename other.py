@@ -52,6 +52,14 @@ def accuracy(y_test, x_test, w):
     accuracy = sum(y_pred == y_test)/len(y_test)
     return accuracy
 
+def split_categories(input_tr):
+    jet_num = 22
+    cat_0 = input_tr[input_tr[:,jet_num] == 0]
+    cat_1 = input_tr[input_tr[:,jet_num] == 1]
+    cat_2 = input_tr[input_tr[:,jet_num] == 2]
+    cat_3 = input_tr[input_tr[:,jet_num] == 3]
+    return cat_0, cat_1, cat_2, cat_3
+
 #Taken from lab02 of ML course
 def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
     """

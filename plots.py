@@ -15,7 +15,7 @@ def log_plot_train_valid(train_errors, test_errors, lambdas, title):
     
 #TODO plot 2D pour gammas / lambda
 
-def plot_train_test(train_errors, test_errors, gammas):
+def plot_train_valid(train_errors, test_errors, gammas):
     fig, ax = plt.subplots()
     ax.plot(gammas, train_errors,'ro', gammas, test_errors,'bo')
 

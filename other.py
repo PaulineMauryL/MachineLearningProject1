@@ -1,4 +1,5 @@
 import numpy as np
+from proj1_helpers import load_csv_data, predict_labels, create_csv_submission
 
 def remove_999(input_train, y_train):
     idx = np.isin(input_train, -999.0)
@@ -24,6 +25,11 @@ def replace_999(input_train):
     idx = np.isin(input_train, -999.0)
     input_train[idx] = 0
     return input_train
+
+def accuracy(y_test, x_test, w):
+    y_pred = predict_labels(w, x_test) # Pas de "-", on le voit grace à l'accuracy calculée pour les train data ci-dessous
+    accuracy = sum(y_pred == y_test)/len(y_test)
+    return accuracy
 
 #Taken from lab02 of ML course
 def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):

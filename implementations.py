@@ -67,6 +67,8 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
 
 
 
+# -----------------------------------------------------------
+# -------------------- Ridge regression ---------------------
 
 # Je suis un peu confuse. Est ce que ce qu'il veut c'est ça ou bien ce que j'ai fait aux fonctions ridge_GD et ridge_SGD ?? 
 # ridge_GD et ridge_SGD sont juste en-dessous
@@ -109,10 +111,13 @@ def ridge_SGD(y, tx, initial_w, max_iters, gamma, lambda_):
     return w, loss
 
 
+# -----------------------------------------------------------
+# --------------------Logistic regresion --------------------
+
 def logistic_regression(y, tx, initial_w, max_iters, gamma): #SGD  (GD easy to implement from here)
     """Stochastic Gradient Descent algorithm with logistic regression."""
     w = initial_w
-
+    batch_size=1
     for n_iter in range(max_iters):
         for y_batch, tx_batch in batch_iter(y, tx, batch_size=batch_size, num_batches=1):
             # compute a stochastic gradient
@@ -128,7 +133,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     """Stochastic Gradient Descent algorithm with REGULARIZED logistic regression."""
     """Required by project description"""
     w = initial_w
-
+    batch_size=1
     for n_iter in range(max_iters):
         for y_batch, tx_batch in batch_iter(y, tx, batch_size=batch_size, num_batches=1):
             # compute a stochastic gradient

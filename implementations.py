@@ -113,6 +113,12 @@ def ridge_SGD(y, tx, initial_w, max_iters, gamma, lambda_):
 
 # -----------------------------------------------------------
 # --------------------Logistic regresion --------------------
+def sigmoid(tx, w):
+    """Compute sigmoid function"""
+    z = np.array(np.exp(-tx.dot(w)))
+    q = 1./(1+z)
+    p = np.where(q < 0.99999999999, q, 0.99999999999)
+    return p
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma): #SGD  (GD easy to implement from here)
     """Stochastic Gradient Descent algorithm with logistic regression."""
@@ -128,6 +134,18 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma): #SGD  (GD easy to i
             loss = compute_logreg_loss(y_batch, tx_batch, w)
     return w, loss
 
+def compute_logreg_loss(y, tx, w): 
+    """Compute loss of logistic regression"""
+    sig = sigmoid(tx, w)
+    loss = np.sum((-y * np.log(sig) - (1-y) * np.log(1-sig)), axis = -1)/len(y)
+    return loss
+
+def compute_logreg_grad(y, tx, w):
+    """Compute gradient of logistic regression""" 
+    sig = sigmoid(tx, w)
+    err  = sig - y
+    grad = tx.T.dot(err)
+    return grad
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     """Stochastic Gradient Descent algorithm with REGULARIZED logistic regression."""
@@ -143,6 +161,22 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
             # compute a stochastic loss
             loss = compute_logreg_reg_loss(y_batch, tx_batch, w, lambda_)
     return w, loss
+
+def compute_logreg_reg_loss(y, tx, w, lambda_):
+    """Compute lorr of regularized logistic regression"""
+    reg = ( lambda_/(2*len(y)) ) * sum(w**2)
+    loss = compute_logreg_loss(y, tx, w) + reg
+    return loss
+
+def compute_logreg_reg_grad(y, tx, w, lambda_):
+    """Compute gradient of regularized logistic regression"""     
+    grad = compute_logreg_grad(y, tx, w) 
+    reg = (lambda_/len(y)) * w[1:]
+    grad[1:] = grad[1:] + reg            
+    return grad
+
+
+
 
 
 
@@ -167,34 +201,4 @@ def compute_gradient_ridge(y, tx, w, lambda_):
     return grad, err
 
 
-def sigmoid(tx, w):
-    """Compute sigmoid function"""
-    z = np.array(np.exp(-tx.dot(w)))
-    return 1./(1 + z)
 
-
-def compute_logreg_loss(y, tx, w):  #np.log parce que math.log fonctionne pas.. J'ai toujours pas compris pourquoi.
-    """Compute loss of logistic regression"""
-    sig = sigmoid(tx, w)
-    loss = np.sum((-y * np.log(sig) - (1-y) * np.log(1-sig)), axis = -1)/len(y)
-    return loss
-
-def compute_logreg_grad(y, tx, w):
-    """Compute gradient of logistic regression""" 
-    sig = sigmoid(tx, w)
-    err  = sig - y
-    grad = tx.T.dot(err)/len(y)
-    return grad
-
-def compute_logreg_reg_loss(y, tx, w, lambda_):
-    """Compute lorr of regularized logistic regression"""
-    reg = ( lambda_/(2*len(y)) ) * sum(w**2)
-    loss = compute_logreg_loss(y, tx, w) + reg
-    return loss
-
-def compute_logreg_reg_grad(y, tx, w, lambda_):
-    """Compute gradient of regularized logistic regression"""     
-    grad = compute_logreg_grad(y, tx, w) 
-    reg = (lambda_/len(y)) * w[1:]
-    grad[1:] = grad[1:] + reg            
-    return grad

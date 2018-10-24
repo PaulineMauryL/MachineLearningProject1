@@ -1,5 +1,20 @@
 import numpy as np
+
+import math
 from proj1_helpers import load_csv_data, predict_labels, create_csv_submission
+
+def cross_validation(x_train,y_train, nb_cross, nb_division):
+
+    nb_elem = math.floor(x_train.shape[0]/nb_division)
+    
+    for k in range(nb_cross):
+        x_valid_k = x_train[k*nb_elem:(k+1)*nb_elem][:]  
+        y_valid_k = y_train[k*nb_elem:(k+1)*nb_elem]
+
+        x_train_k = np.concatenate([x_train[0:k*nb_elem][:], x_train[(k+1)*nb_elem:][:]])
+        y_train_k = np.concatenate([y_train[0:k*nb_elem],    y_train[(k+1)*nb_elem:]   ])  
+    
+    return x_train_k,y_train_k,x_valid_k,y_valid_k
 
 def remove_999(input_train, y_train):
     idx = np.isin(input_train, -999.0)
@@ -26,8 +41,14 @@ def replace_999(input_train):
     input_train[idx] = 0
     return input_train
 
+def replace_1(input_train):
+    idx = np.isin(input_train, -1.0)
+    input_train[idx] = 0
+    return input_train
+
 def accuracy(y_test, x_test, w):
     y_pred = predict_labels(w, x_test) # Pas de "-", on le voit grace à l'accuracy calculée pour les train data ci-dessous
+    print(y_pred[:10],y_test[:10])
     accuracy = sum(y_pred == y_test)/len(y_test)
     return accuracy
 

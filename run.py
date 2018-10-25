@@ -1,41 +1,19 @@
 from proj1_helpers import load_csv_data, create_csv_submission
 from preprocessing import standardize_train, standardize_test
+from run_fct import predict_labels, split_categories_run, remove_999col, add_bias
+from implementations import ridge_GD
 from other import replace_1
 
-def predict_labels(weights, data):
-    """Generates class predictions given weights, and a test data matrix
-    Threshold at 0.5 because our predictions are between 0 and 1"""
-    y_pred = np.dot(data, weights)
-    y_pred[np.where(y_pred <= 0.5)] = -1
-    y_pred[np.where(y_pred > 0.5)] = 1
 
-    return y_pred
-
-
-
-
-def split_categories(x_test):
-    jet_num = 22
-    cat_0 = x_test[x_test[:, jet_num] == 0]
-    cat_1 = x_test[x_test[:, jet_num] == 1]
-    cat_2 = x_test[x_test[:, jet_num] == 2]
-    cat_3 = x_test[x_test[:, jet_num] == 3]
-
-    idx_0 = np.argwhere(x_test[:, jet_num] == 0)
-    idx_1 = np.argwhere(x_test[:, jet_num] == 1)
-    idx_2 = np.argwhere(x_test[:, jet_num] == 2)
-    idx_3 = np.argwhere(x_test[:, jet_num] == 3)
-
-    return cat_0, cat_1, cat_2, cat_3, idx_0, idx_1, idx_2, idx_3
 
 # Load training input
 y_train, x_train, ids_train = load_csv_data('train.csv', sub_sample=False)
-_, x_test, ids_test = load_csv_data('test.csv', sub_sample=False)
+_,       x_test,  ids_test  = load_csv_data('test.csv',  sub_sample=False)
 
 
 # Divide in categories, keep idx
-cat_0_tr, cat_1_tr, cat_2_tr, cat_3_tr, idx_0_tr, idx_1_tr, idx_2_tr, idx_3_tr = split_categories(x_train)
-cat_0_te, cat_1_te, cat_2_te, cat_3_te, idx_0_te, idx_1_te, idx_2_te, idx_3_te = split_categories(x_test)
+cat_0_tr, cat_1_tr, cat_2_tr, cat_3_tr, idx_0_tr, idx_1_tr, idx_2_tr, idx_3_tr = split_categories_run(x_train)
+cat_0_te, cat_1_te, cat_2_te, cat_3_te, idx_0_te, idx_1_te, idx_2_te, idx_3_te = split_categories_run(x_test)
 
 # Adapt y_train to 0, 1 instead of 0, -1
 y_train = replace_1(y_train)
@@ -60,47 +38,114 @@ cat_3_tr, mean_3, std_3 = standardize_train(cat_3_tr)
 cat_3_te = standardize_test(cat_3_te)
 
 
-
-# Find weights 
+#############################################################################
 #############################################################################
 #########         For each category, do some different stuff        #########
 #########                        Change code                        #########
 #############################################################################
+#############################################################################
+
+#############################################################################
+#########                      For category 0                       #########
+#############################################################################
+
+## Preprocessing
+# Remove columns with -999 values
+cat_0_tr, cat_0_te = remove_999col(cat_0_tr, cat_0_te)
+# Add bias 
+cat_0_tr = add_bias(cat_0_tr)
+cat_0_te = add_bias(cat_0_te)
+# Build specific features
+cat_0_tr = build_poly(cat_0_tr, degree = 1 )                        ######### ADAPT
+cat_0_te = build_poly(cat_0_te, degree = 1 )                        ######### ADAPT
+# Hyperparam definition ##################################################### CHANGE
+gamma = 1
+lambda_ = 1
+# Computation
 w_0, _ = ridge_SGD(y_train_0, cat_0_tr, initial_w, max_iters, gamma, lambda_)
-y_0 = predict_labels(w_0, cat_0_te)
+#Prediction
+y_0_te = predict_labels(w_0, cat_0_te)
 
+
+#############################################################################
+#########                      For category 1                       #########
+#############################################################################
+
+## Preprocessing
+# Remove columns with -999 values
+cat_1_tr, cat_1_te = remove_999col(cat_1_tr, cat_1_te)
+# Add bias 
+cat_1_tr = add_bias(cat_1_tr)
+cat_1_te = add_bias(cat_1_te)
+# Build specific features
+cat_1_tr = build_poly(cat_1_tr, degree = 1 )                        ######### ADAPT
+cat_1_te = build_poly(cat_1_te, degree = 1 )                        ######### ADAPT
+# Hyperparam definition ##################################################### CHANGE
+gamma = 1
+lambda_ = 1
+# Computation
 w_1, _ = ridge_SGD(y_train_1, cat_1_tr, initial_w, max_iters, gamma, lambda_)
-y_1 = predict_labels(w_1, cat_1_te)
+#Prediction
+y_1_te = predict_labels(w_1, cat_1_te)
 
+
+#############################################################################
+#########                      For category 2                       #########
+#############################################################################
+
+## Preprocessing
+# Remove columns with -999 values
+cat_2_tr, cat_2_te = remove_999col(cat_2_tr, cat_2_te)
+# Add bias 
+cat_2_tr = add_bias(cat_2_tr)
+cat_2_te = add_bias(cat_2_te)
+# Build specific features
+cat_2_tr = build_poly(cat_2_tr, degree = 1 )                        ######### ADAPT
+cat_2_te = build_poly(cat_2_te, degree = 1 )                        ######### ADAPT
+# Hyperparam definition ##################################################### CHANGE
+gamma = 1
+lambda_ = 1
+# Computation
 w_2, _ = ridge_SGD(y_train_2, cat_2_tr, initial_w, max_iters, gamma, lambda_)
-y_2 = predict_labels(w_2, cat_2_te)
+#Prediction
+y_2_te = predict_labels(w_2, cat_2_te)
 
+
+#############################################################################
+#########                      For category 3                       #########
+#############################################################################
+
+## Preprocessing
+# Remove columns with -999 values
+cat_3_tr, cat_3_te = remove_999col(cat_3_tr, cat_3_te)
+# Add bias 
+cat_3_tr = add_bias(cat_3_tr)
+cat_3_te = add_bias(cat_3_te)
+# Build specific features
+cat_3_tr = build_poly(cat_3_tr, degree = 1 )                        ######### ADAPT
+cat_3_te = build_poly(cat_3_te, degree = 1 )                        ######### ADAPT
+# Hyperparam definition ##################################################### CHANGE
+gamma = 1
+lambda_ = 1
+# Computation
 w_3, _ = ridge_SGD(y_train_3, cat_3_tr, initial_w, max_iters, gamma, lambda_)
-y_3 = predict_labels(w_3, cat_2_te)
+#Prediction
+y_3_te = predict_labels(w_3, cat_2_te)
+
+
+
+#############################################################################
+#############################################################################
+#############################################################################
+
 
 
 # Reconstruct y in order
+order_tab = np.concatenate((idx_0_te, idx_1_te, idx_2_te, idx_3_te))
+order_idx = np.argsort(order_tab, axis=0)
+y_unordered = np.concatenate((y_0_te, y_1_te, y_2_te, y_3_te))
+y_pred = y_unordered[order_idx]
 
 
-
-
-
-
-
-
-
-
-#Il faut sortir une liste de ids and y_pred
-def create_csv_submission(ids, y_pred, name):
-    """
-    Creates an output file in csv format for submission to kaggle
-    Arguments: ids (event ids associated with each prediction)
-               y_pred (predicted class labels)
-               name (string name of .csv output file to be created)
-    """
-    with open(name, 'w') as csvfile:
-        fieldnames = ['Id', 'Prediction']
-        writer = csv.DictWriter(csvfile, delimiter=",", fieldnames=fieldnames)
-        writer.writeheader()
-        for r1, r2 in zip(ids, y_pred):
-            writer.writerow({'Id':int(r1),'Prediction':int(r2)})
+# Create submission
+create_csv_submission(ids_test, y_pred, "submission")

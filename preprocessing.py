@@ -8,7 +8,7 @@ def standardize_train(x):
     
     return std_data, np.mean(x, axis=0), np.std(x, axis=0)
 
-def standardize_valid(x, mean, std):
+def standardize_test(x, mean, std):
     ''' standardize test set with same values as training set
     '''
     return (x-mean)/std

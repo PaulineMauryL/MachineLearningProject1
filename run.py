@@ -1,6 +1,6 @@
 from proj1_helpers import load_csv_data, create_csv_submission
 from preprocessing import standardize_train, standardize_test
-
+from other import replace_1
 
 def predict_labels(weights, data):
     """Generates class predictions given weights, and a test data matrix
@@ -14,7 +14,7 @@ def predict_labels(weights, data):
 
 
 
-def split_categories_test(x_test):
+def split_categories(x_test):
     jet_num = 22
     cat_0 = x_test[x_test[:, jet_num] == 0]
     cat_1 = x_test[x_test[:, jet_num] == 1]
@@ -62,39 +62,24 @@ cat_3_te = standardize_test(cat_3_te)
 
 
 # Find weights 
+#############################################################################
+#########         For each category, do some different stuff        #########
+#########                        Change code                        #########
+#############################################################################
 w_0, _ = ridge_SGD(y_train_0, cat_0_tr, initial_w, max_iters, gamma, lambda_)
-y_0 = predict_labels(w_0, cat_0_tr)
+y_0 = predict_labels(w_0, cat_0_te)
 
 w_1, _ = ridge_SGD(y_train_1, cat_1_tr, initial_w, max_iters, gamma, lambda_)
-y_1 = predict_labels(w_1, cat_1_tr)
+y_1 = predict_labels(w_1, cat_1_te)
 
 w_2, _ = ridge_SGD(y_train_2, cat_2_tr, initial_w, max_iters, gamma, lambda_)
-y_2 = predict_labels(w_2, cat_2_tr)
+y_2 = predict_labels(w_2, cat_2_te)
 
 w_3, _ = ridge_SGD(y_train_3, cat_3_tr, initial_w, max_iters, gamma, lambda_)
-y_3 = predict_labels(w_3, cat_2_tr)
+y_3 = predict_labels(w_3, cat_2_te)
 
 
-
-
-def load_csv_data(data_path, sub_sample=False):
-    """Loads data and returns y (class labels), tX (features) and ids (event ids)"""
-    y = np.genfromtxt(data_path, delimiter=",", skip_header=1, dtype=str, usecols=1)
-    x = np.genfromtxt(data_path, delimiter=",", skip_header=1)
-    ids = x[:, 0].astype(np.int)
-    input_data = x[:, 2:]
-
-    # convert class labels from strings to binary (-1,1)
-    yb = np.ones(len(y))
-    yb[np.where(y=='b')] = -1
-    
-    # sub-sample
-    if sub_sample:
-        yb = yb[::50]
-        input_data = input_data[::50]
-        ids = ids[::50]
-
-    return yb, input_data, ids
+# Reconstruct y in order
 
 
 

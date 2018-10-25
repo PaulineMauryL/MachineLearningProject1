@@ -1,4 +1,35 @@
 import numpy as np
+import math
+import matplotlib.pyplot as plt
+
+def dataprocessing(cat_0_tri,cat_0_tei,idx_0_tr, idx_0_te,deg0=0,adddegree0=0,sqrt0=0,comb0=0):
+    
+    cat_0_tr, cat_0_te = remove_999col(cat_0_tri, cat_0_tei)
+
+    to_add_cat_0_tr = build_data(cat_0_tr,deg0,adddegree0,sqrt0,comb0)
+    to_add_cat_0_te = build_data(cat_0_te,deg0,adddegree0,sqrt0,comb0)
+    trx_0i = add_data(cat_0_tr,to_add_cat_0_tr)
+    tex_0i = add_data(cat_0_te,to_add_cat_0_te)
+
+    trx_0, mean0, std0 = standardize_train(trx_0i)
+    tex_0 = standardize_test(tex_0i, mean0, std0)
+    
+    return trx_0, tex_0
+
+def split_categories(x_test):
+    jet_num = 22
+    cat_0 = np.delete(x_test[x_test[:, jet_num] == 0],[22,29],axis=1)
+    cat_1 = np.delete(x_test[x_test[:, jet_num] == 1],22,axis=1)
+    cat_2 = np.delete(x_test[x_test[:, jet_num] == 2],22,axis=1)
+    cat_3 = np.delete(x_test[x_test[:, jet_num] == 3],22,axis=1)
+
+    idx_0 = np.argwhere(x_test[:, jet_num] == 0)
+    idx_1 = np.argwhere(x_test[:, jet_num] == 1)
+    idx_2 = np.argwhere(x_test[:, jet_num] == 2)
+    idx_3 = np.argwhere(x_test[:, jet_num] == 3)
+    
+
+    return cat_0, cat_1, cat_2, cat_3, idx_0, idx_1, idx_2, idx_3
 
 def standardize_train(x):
     ''' standardize training set
@@ -18,9 +49,79 @@ def add_bias(x):
     vect_one = np.ones([x.shape[0],1])
     return np.concatenate((vect_one, x), axis = 1)
 
-def build_poly(x, degree):
-    """polynomial basis functions for input data x, for j=0 up to j=degree."""
-    poly = np.ones((len(x), 1))
-    for deg in range(1,degree+1):
-        poly = np.c_[poly, np.power(x, deg)]
-    return poly
+def build_poly(tx, degree):
+    """INPUT : matrix tx = [x1, x2, ..., xn]
+       OUPUT : matrix tx = [x1^degree, x2^degree, ..., xn^degree] 
+       """
+    out = np.power(tx[:,0],degree)
+    
+    for k in np.arange(1, tx.shape[1]):
+        out = np.c_[out, np.power(tx[:,k], degree)]
+    
+    return out
+
+def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = False):
+    """INPUT : matrix tx = [x1, x2, ... xn]
+       OUTPUT : matrix = [1, x1, x1^2, ... x1^degree,   x2, x2^2, ..., x2^ degree, ...   , xn, xn^2, ... , x^degree]
+       
+       options :
+       if sqrt = True, add the square root of each col : x1^0.5, x2^0.5, ... , xn^0.5
+       if comb = True, add the linear combination of each col : (x1 * x2, x1 * x3, ... x1 *xn, .... , xn-1 * xn)
+       """
+    output = np.ones((tx.shape[0],1))
+    
+    if degree:
+        if adddegree:
+            for i in range(degree-1):
+                output = np.c_[output,build_poly(tx,i)]
+        output = np.c_[output, build_poly(tx,degree)]
+    
+    if sqroot:
+        output = np.c_[output, build_sqrt(tx)]
+        
+    if comb:
+        output = np.c_[output, build_lin_com(tx)]
+    
+    end = output.shape[1]
+    output = output[:,1:end]
+      
+    return output
+
+def build_lin_com(tx):
+    """INPUT : matrix tx = [x1, x2, ... xn]
+       OUTPUT : matrix output = [x1 x2, x1 x3, ... , x1 xn,     x2 x3, x2 x4, ... x2 xn, ...   , xn-1 xn]
+       Note :  output has n(n-1)/2 columns"""
+    output = tx[:,0]*tx[:,1]
+    nb_col = tx.shape[1]
+    end = int(nb_col*(nb_col-1)/2)+1
+    
+    for i in np.arange(nb_col-1):
+        for j in np.arange(i+1,nb_col):
+            output = np.c_[output, tx[:,i]*tx[:,j]]
+            #print(i,j, "  ")
+        #print("")
+    
+    return output[:,1:end]
+
+def build_sqrt(tx):
+    """INPUT : matrix tx = [x1, x2, ..., xn]
+       OUTPUT : matrix tx = [x1^0.5, x2^0.5, ..., xn^0.5]
+       
+       Note : if the value x is negativ, compute -|x|^0.5
+       """
+    out = np.where(tx <0 , -np.power(-tx,0.5), np.power(tx,0.5))
+    return out
+       
+def add_data(tx, tx_to_add_to_tx):
+    return np.c_[tx, tx_to_add_to_tx]
+
+def remove_999col(input_train,input_test):
+    idx = np.isin(input_train, -999.0)
+    idx = np.any(idx,axis=0)
+    ind = np.nonzero(idx)[0]
+    
+    x_train_no_999col = np.delete(input_train,ind,axis=1)
+    x_test_no_999col = np.delete(input_test,ind,axis=1)
+    
+    return  x_train_no_999col,x_test_no_999col
+

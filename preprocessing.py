@@ -117,6 +117,71 @@ def build_sqrt(tx):
 def add_data(tx, tx_to_add_to_tx):
     return np.c_[tx, tx_to_add_to_tx]
 
+def build_lin_com3(tx):
+    """ INPUT : tx = [x1 x2 x3 ... xn ]
+        OUTPUT : out = [x1 x2 x3, x1 x2 x4, x1 x2 x5, ... x1 x2 xn, // x1 x3 x4, x1 x3 x5, ... , x1 x3 xn, // ... , ... , x1 xn-1 xn,
+                        x2 x3 x4, x2 x3 x5, ... ... ... x2 xn-1 xn,
+                        ...
+                        xn-2 xn-1 xn]
+                      
+       Note : tx must at least have 3 columns !
+    """ 
+    n = tx.shape[1] #nb of column
+    out = tx[:,0]*tx[:,1]*tx[:,2]
+    
+    for i in np.arange(n-2):
+        #nb_el = i*(i-1)/2
+        col = tx[:,i]
+        to_add = build_lin_com( tx[:,i+1:n] ) * col[:, np.newaxis] #Note : the order for the multiplication matters !
+        #print("\n\nto_add = \n", to_add)
+        out = np.c_[out, to_add]
+    
+    end = out.shape[1]
+    return out[:,1:end]
+
+def build_lin_com_deg_old(tx,deg = 2):
+    """ INPUT : tx = [x1 x2 x3 ... xn ]
+        OUTPUT : out = [x1 x2^deg, x1 x3^deg, ..., x1 xn^deg,
+                        x2 x3^deg, x2 x4^deg, ..., x2 xn^deg,
+                        ...
+                        xn-1 xn^deg ]
+       C'est bien mais c'est pas ce qu'on veut |D
+       Note : tx must has at least 2 columns !
+       """ 
+    n = tx.shape[1]
+    out = np.ones((tx.shape[0],1))
+
+    for i in np.arange(n-2):
+        col = tx[:,i]
+        pol_deg = build_poly(tx[:,i+1:n],deg)
+        to_add = pol_deg*col[:, np.newaxis]
+        out = np.c_[out, to_add]
+
+    last = tx[:,tx.shape[1]-1]**deg * tx[:,tx.shape[1]-2]
+    out = np.c_[out,last]
+
+    end = out.shape[1]
+    return out[:,1:end]
+
+def build_lin_com_deg(tx,deg = 2):
+    n = tx.shape[1]
+    out = np.ones((tx.shape[0],1))
+    
+    for i in np.arange(n):
+        core = np.c_[tx[:,0:i], tx[:,i+1:n]]
+        col = tx[:,i]**deg
+        to_add = core * col[:, np.newaxis]
+        out = np.c_[out, to_add]
+    
+    end = out.shape[1]
+    return out[:,1:end]
+
+def build_all_deg_3(tx):
+    """ build of combination of degree 3 : x1 x2 x3, x1^2 x3, ... """
+    lin3 = build_lin_com3(tx)
+    lin12 = build_lin_com_deg(tx,2)
+    return np.c_[lin3,lin12]
+
 def remove_999col(input_train,input_test):
     idx = np.isin(input_train, -999.0)
     idx = np.any(idx,axis=0)

@@ -55,20 +55,22 @@ def ridge_hyperparam(lambdas, nb_fold, nb_crossvalid, x_train, y_train):
 # -----------------------------------------------------------
 # -------------------- Whole search    ---------------------
 def modeling(trx_0,y_train_0,num_intervals_lambda=1,nb_fold=1,nb_crossvalid=1,min_range=-1,max_range=1):
-
+    #print(trx_0.shape)
+    #print(y_train_0.shape)
     lambdas_0       = np.logspace(min_range, max_range, num_intervals_lambda)
-    valid_r_0, train_r_0= ridge_hyperparam(lambdas_0, nb_fold, nb_crossvalid, trx_0, y_train_0)
+    valid_r_0, train_r_0 = ridge_hyperparam(lambdas_0, nb_fold, nb_crossvalid, trx_0, y_train_0)
     
     plot_train_test(train_r_0, valid_r_0, lambdas_0,2)
     
     # Minimum values for ls_sgd
     ind_0 = np.unravel_index(np.argmin(valid_r_0, axis=None), valid_r_0.shape)
+    
     lambd_0 = lambdas_0[ind_0]
     min_valid_r_loss_0 = valid_r_0[ind_0]
-    print("The best lambda is",lambd_0,"with valid test",min_valid_r_loss_0)
-    w_best_0,lost_best_0=ridge_regression(y_train_0,trx_0,lambd_0)
-    print("And the loss on the whole train data is",lost_best_0)
-    
+    #print("The best lambda is",lambd_0,"with valid test",min_valid_r_loss_0)
+    print("Best lambda = {} \n".format(lambd_0))
+    w_best_0, lost_best_0 = ridge_regression(y_train_0, trx_0, lambd_0)
+    #print("And the loss on the whole train data is", lost_best_0)
     
     return w_best_0, lambd_0
 

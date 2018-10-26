@@ -186,7 +186,11 @@ def build_lin_com_deg(tx,deg = 2):
     return out[:,1:end]
 
 def build_all_deg_3(tx):
-    """ build of combination of degree 3 : x1 x2 x3, x1^2 x3, ... """
+    """
+    input : tx = [x1 x2 ... xn]
+    output : build of combination of degree 3 : x1 x2 x3, x1^2 x3, ... 
+    Note : tx must at least have 3 columns
+    """
     lin3 = build_lin_com3(tx)
     lin12 = build_lin_com_deg(tx,2)
     return np.c_[lin3,lin12]

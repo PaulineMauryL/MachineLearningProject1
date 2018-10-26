@@ -129,8 +129,8 @@ def best_set_of_features(x_train, y_train, num_intervals_lambda, nb_fold, nb_cro
         ##if accuracy starts decreasing
         if(i > 4 and accuracies[-1] < accuracies[-2] and accuracies[-1] < accuracies[-3]):
             print("Break, accuracy is decreasing since two lasts features (don't take last feature of list)")
-            return features_idx, lambda_best
+            return features_idx, lambdas
         else:
             features_idx.append(feature)
         
-    return features_idx, lambda_best, nb_features_already
+    return features_idx, lambdas

@@ -53,7 +53,7 @@ def ridge_hyperparam(lambdas, nb_fold, nb_crossvalid, x_train, y_train):
     return lvalid, ltrain
 
 # -----------------------------------------------------------
-# -------------------- Whole searche    ---------------------
+# -------------------- Whole search    ---------------------
 def modeling(trx_0,y_train_0,num_intervals_lambda=1,nb_fold=1,nb_crossvalid=1,min_range=-1,max_range=1):
 
     lambdas_0       = np.logspace(min_range, max_range, num_intervals_lambda)
@@ -70,6 +70,6 @@ def modeling(trx_0,y_train_0,num_intervals_lambda=1,nb_fold=1,nb_crossvalid=1,mi
     print("And the loss on the whole train data is",lost_best_0)
     
     
-    return w_best_0
+    return w_best_0, lambd_0
 
 

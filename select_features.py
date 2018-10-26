@@ -4,15 +4,13 @@ from other import accuracy
 import numpy as np 
 import math
 
-y_train, x_train, ids_train = load_csv_data('train.csv', sub_sample=False)
-
-def first_best(x_train, y_train):
-    print("First best")
+def first_best(x_train, y_train,lambda_0):
+    #print("First best")
 
     nb_fold = 3
     nb_elem = math.floor(x_train.shape[0]/nb_fold)
     nb_features = x_train.shape[1]
-    lambda_ = 0.5  ###################################################### CHANGE
+    lambda_ = lambda_0
 
     losses = []
     for feat in range(nb_features):     
@@ -41,16 +39,16 @@ def first_best(x_train, y_train):
 
 
 
-def best_feature(x_train, y_train, nb_features_already, features_idx):
+def best_feature(x_train, y_train, nb_features_already, features_idx,lambda_0):
     #print("Best feature {} time".format(nb_features_already))
 
     nb_fold = 3
     nb_elem = math.floor(x_train.shape[0]/nb_fold)
     nb_features = x_train.shape[1]
-    lambda_ = 0.5  ###################################################### CHANGE
+    lambda_ = lambda_0
     x_train_already = x_train[:,features_idx]
 
-    print(x_train_already.shape)  #(250'000, 1)
+    #print(x_train_already.shape)  #(250'000, 1)
 
     #accuracies =[]
     losses = []
@@ -80,7 +78,7 @@ def best_feature(x_train, y_train, nb_features_already, features_idx):
             #print("mean loss is {}".format(mean_loss))
             losses.append(mean_loss)
         elif(feat in features_idx):
-            print("feat in idx already")
+            #print("feat in idx already")
             losses.append(1000)         # so high it will never be the min
     #max_feat = np.argmax(accuracies)
     #max_acc = accuracies[max_feat]
@@ -88,7 +86,7 @@ def best_feature(x_train, y_train, nb_features_already, features_idx):
 
     min_feat = np.argmin(losses)
     min_loss = losses[min_feat]
-    print("Feature {} has the minimum loss of {}".format(min_feat, min_loss))
+    #print("Feature {} has the minimum loss of {}".format(min_feat, min_loss))
 
 
     #using the accuracy would enable to break in the main loopwhen accuracy start decreasing but speed of algorithm is very affected. 
@@ -96,11 +94,11 @@ def best_feature(x_train, y_train, nb_features_already, features_idx):
     return min_feat #max_feat, max_acc
 
 
-def best_set_of_features(x_train, y_train):
+def best_set_of_features(x_train, y_train,lambda_0):
     
     nb_features_already = 0
-    first_min_feat = first_best(x_train, y_train)
-    print("first_mean_feat {}",format(first_min_feat))
+    first_min_feat = first_best(x_train, y_train,lambda_0)
+    #print("first_mean_feat {}",format(first_min_feat))
 
     features_idx = []
     features_idx.append(first_min_feat)
@@ -114,8 +112,8 @@ def best_set_of_features(x_train, y_train):
         #x_train = x_train_new[:]
         #if(i==0):
         #feature, acc = best_feature(x_train, y_train, nb_features_already)
-        feature = best_feature(x_train, y_train, nb_features_already, features_idx)
-        print("other feature {}",format(feature))
+        feature = best_feature(x_train, y_train, nb_features_already, features_idx,lambda_0)
+        #print("other feature {}",format(feature))
         ##if accuracy starts decreasing
         #if(i > 3 and acc < accuracy[-1] and acc < accuracy[-2]):
         #    break
@@ -123,7 +121,7 @@ def best_set_of_features(x_train, y_train):
         features_idx.append(feature)
         #features_idx.append(feature - nb_features_already)
         
-        print("nb_features_already = {}".format(nb_features_already))
+        #print("nb_features_already = {}".format(nb_features_already))
 
         #insérer la meileure feature au début de x_train et décaler toutes les autres vers la droite  (np.insert( dans x_train[0], x_train[feature] )  )
         '''
@@ -136,8 +134,3 @@ def best_set_of_features(x_train, y_train):
                 x_train_new[f] = x_train[f]
         '''
     return features_idx
-
-
-features_idx = best_set_of_features(x_train, y_train)
-
-print(features_idx)

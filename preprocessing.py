@@ -11,8 +11,9 @@ def dataprocessing(cat_0_tri,cat_0_tei,idx_0_tr, idx_0_te,deg0=0,adddegree0=0,sq
     trx_0i = add_data(cat_0_tr,to_add_cat_0_tr)
     tex_0i = add_data(cat_0_te,to_add_cat_0_te)
 
-    trx_0, mean0, std0 = standardize_train(trx_0i)
-    tex_0 = standardize_test(tex_0i, mean0, std0)
+    trx_0ii, mean0, std0 = standardize_train(trx_0i)
+    trx_0 = add_bias(trx_0ii)
+    tex_0 = add_bias(standardize_test(tex_0i, mean0, std0))
     
     return trx_0, tex_0
 
@@ -72,9 +73,10 @@ def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = Fal
     
     if degree:
         if adddegree:
-            for i in range(degree-1):
-                output = np.c_[output,build_poly(tx,i)]
-        output = np.c_[output, build_poly(tx,degree)]
+            for i in range(1,degree,1):
+                output = np.c_[output,build_poly(tx,i+1)]
+        else:
+            output = np.c_[output, build_poly(tx,degree)]
     
     if sqroot:
         output = np.c_[output, build_sqrt(tx)]

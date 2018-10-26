@@ -2,12 +2,12 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-def dataprocessing(cat_0_tri,cat_0_tei,idx_0_tr, idx_0_te,deg0=0,adddegree0=0,sqrt0=0,comb0=0):
+def dataprocessing(cat_0_tri,cat_0_tei,idx_0_tr, idx_0_te,deg0=0,adddegree0=0,sqrt0=0,comb0=0,trigo=0,hyperb=0,combtrigo=0):
     
     cat_0_tr, cat_0_te = remove_999col(cat_0_tri, cat_0_tei)
 
-    to_add_cat_0_tr = build_data(cat_0_tr,deg0,adddegree0,sqrt0,comb0)
-    to_add_cat_0_te = build_data(cat_0_te,deg0,adddegree0,sqrt0,comb0)
+    to_add_cat_0_tr = build_data(cat_0_tr,deg0,adddegree0,sqrt0,comb0,trigo,hyperb,combtrigo)
+    to_add_cat_0_te = build_data(cat_0_te,deg0,adddegree0,sqrt0,comb0,trigo,hyperb,combtrigo)
     trx_0i = add_data(cat_0_tr,to_add_cat_0_tr)
     tex_0i = add_data(cat_0_te,to_add_cat_0_te)
 
@@ -61,7 +61,7 @@ def build_poly(tx, degree):
     
     return out
 
-def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = False):
+def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = False, trigo=False,hyperb=False,combtrigo=False):
     """INPUT : matrix tx = [x1, x2, ... xn]
        OUTPUT : matrix = [1, x1, x1^2, ... x1^degree,   x2, x2^2, ..., x2^ degree, ...   , xn, xn^2, ... , x^degree]
        
@@ -83,6 +83,17 @@ def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = Fal
         
     if comb:
         output = np.c_[output, build_lin_com(tx)]
+        
+    if trigo:
+        output = np.c_[output, build_trigo(tx)]
+        
+    if hyperb:
+        output = np.c_[output, build_hyperb(tx)]
+        
+    if combtrigo:
+        trigest= build_trigo(tx,1)
+        step1= np.c_[tx,trigest]
+        output = np.c_[output, build_lin_com(step1)]
     
     end = output.shape[1]
     output = output[:,1:end]
@@ -100,8 +111,6 @@ def build_lin_com(tx):
     for i in np.arange(nb_col-1):
         for j in np.arange(i+1,nb_col):
             output = np.c_[output, tx[:,i]*tx[:,j]]
-            #print(i,j, "  ")
-        #print("")
     
     return output[:,1:end]
 
@@ -191,4 +200,16 @@ def remove_999col(input_train,input_test):
     x_test_no_999col = np.delete(input_test,ind,axis=1)
     
     return  x_train_no_999col,x_test_no_999col
+
+def build_trigo(tx,num=0):
+    if num:
+        tx = np.c_[np.cos(tx),np.sin(tx),np.tan(tx)]
+    else:
+        tx = np.c_[np.cos(tx)]
+    return tx
+
+def build_hyperb(tx):
+    tx = np.c_[np.cosh(tx),np.sinh(tx),np.tanh(tx)]
+    return tx
+    
 

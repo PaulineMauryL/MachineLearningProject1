@@ -88,19 +88,16 @@ def best_feature(x_train, y_train, nb_features_already, features_idx,lambda_0):
     return min_feat #max_feat, max_acc
 
 
-def best_set_of_features(x_train, y_train):
-    nb_fold = 10
-    nb_crossvalid = 3
-    
-    nb_features_already = 0
-    first_min_feat = first_best(x_train, y_train, lambda_0 = 0)
+def best_set_of_features(x_train, y_train, num_intervals_lambda, nb_fold, nb_crossvalid, min_range, max_range):
+    first_min_feat = first_best(x_train, y_train, lambda_0 = 0.001)
+    nb_features_already =1
     #print("first_mean_feat {}",format(first_min_feat))
 
     features_idx = []
     features_idx.append(first_min_feat)
     
     lambdas = []
-    _, lambda_best = modeling(x_train, y_train, num_intervals_lambda=10, nb_fold=60, nb_crossvalid=3, min_range=-2, max_range=0) 
+    _, lambda_best = modeling(x_train, y_train, num_intervals_lambda, nb_fold, nb_crossvalid, min_range, max_range) 
     
     lambdas.append(lambda_best)
     
@@ -108,12 +105,12 @@ def best_set_of_features(x_train, y_train):
     
     for i in range(30):
         nb_features_already += 1
-
+        print("best lambda",lambda_best)
         feature = best_feature(x_train, y_train, nb_features_already, features_idx, lambda_best)
         
         x_train_modeling = np.concatenate([x_train[:,features_idx], x_train[:, feature:feature+1]], axis = 1)
         
-        w_best, lambda_best = modeling(x_train_modeling, y_train, num_intervals_lambda=60, nb_fold=10, nb_crossvalid=3, min_range=-20, max_range=0) 
+        w_best, lambda_best = modeling(x_train_modeling, y_train, num_intervals_lambda, nb_fold, nb_crossvalid, min_range, max_range) 
         lambdas.append(lambda_best)
         
         nb_elem = math.floor(x_train.shape[0]/nb_fold)
@@ -122,11 +119,9 @@ def best_set_of_features(x_train, y_train):
             x_valid_k = x_train[k*nb_elem:(k+1)*nb_elem][:]  
             y_valid_k = y_train[k*nb_elem:(k+1)*nb_elem]           
             x_train_k = np.concatenate([x_train[0:k*nb_elem][:], x_train[(k+1)*nb_elem:][:]])
-            y_train_k = np.concatenate([y_train[0:k*nb_elem],    y_train[(k+1)*nb_elem:]   ]) 
-            
+            y_train_k = np.concatenate([y_train[0:k*nb_elem],    y_train[(k+1)*nb_elem:]   ])
             x_acc = np.concatenate([x_valid_k[:,features_idx], x_valid_k[:, feature:feature+1]], axis = 1)
-            
-            acc.append( accuracy(y_valid_k, x_acc, w_best) )
+            acc.append(accuracy(y_valid_k, x_acc, w_best))
             
         print("Accuracy = {}".format(np.mean(acc)) )
         accuracies.append( np.mean(acc) )

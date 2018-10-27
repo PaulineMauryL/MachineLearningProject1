@@ -70,6 +70,7 @@ def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = Fal
        if comb = True, add the linear combination of each col : (x1 * x2, x1 * x3, ... x1 *xn, .... , xn-1 * xn)
        """
     output = np.ones((tx.shape[0],1))
+    #print("\n\n ON EST AU DEBUT DE BUILD_DATA")
     
     if degree:
         if adddegree:
@@ -89,6 +90,8 @@ def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = Fal
         
     if hyperb:
         output = np.c_[output, build_hyperb(tx)]
+        #print(output)
+    #print("after hyperb, output = \n", output)
         
     if combtrigo:
         trigest= build_trigo(tx,1)
@@ -96,7 +99,9 @@ def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = Fal
         output = np.c_[output, build_lin_com(step1)]
     
     end = output.shape[1]
+    #print("output before last part\n", output)
     output = output[:,1:end]
+    #print("output after last part\n", output)
       
     return output
 
@@ -213,7 +218,7 @@ def build_trigo(tx,num=0):
     return tx
 
 def build_hyperb(tx):
-    tx = np.c_[np.cosh(tx),np.sinh(tx),np.tanh(tx)]
-    return tx
+    out = np.c_[np.cosh(tx),np.sinh(tx),np.tanh(tx)]
+    return out
     
 

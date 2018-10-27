@@ -79,7 +79,7 @@ def build_fraction(tx):
     end = out.shape[1]
     return out[:,1:end]
 
-def build_data(tx, degree = False, adddegree = False, inv = False, frac = False, sqroot = False, cbroot = False, comb = False, comb3 = False, trigo=False, expo = False, hyperb=False,combtrigo=False):
+def build_data(tx, degree = False, adddegree = False, inv = False, frac = False, sqroot = False, sqrootpos = False, cbroot = False, comb = False, comb3 = False, trigo=False, expo = False, hyperb=False,combtrigo=False):
     """INPUT : matrix tx = [x1, x2, ... xn]
        OUTPUT : matrix = [1, x1, x1^2, ... x1^degree,   x2, x2^2, ..., x2^ degree, ...   , xn, xn^2, ... , x^degree]
        
@@ -105,6 +105,9 @@ def build_data(tx, degree = False, adddegree = False, inv = False, frac = False,
     
     if sqroot:
         output = np.c_[output, build_sqrt(tx)]
+        
+    if sqrootpos: #make sqrt( absolute_value ( tx ) )
+        output = np.c_[output, np.sqrt( np.abs (tx) )]
     
     if cbroot:
         output = np.c_[output, np.cbrt(tx)]

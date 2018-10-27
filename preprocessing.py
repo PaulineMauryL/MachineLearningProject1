@@ -61,7 +61,7 @@ def build_poly(tx, degree):
     
     return out
 
-def build_data(tx, degree = False, adddegree = False, sqroot = False, cbroot = False, comb = False, comb3 = False, trigo=False,hyperb=False,combtrigo=False):
+def build_data(tx, degree = False, adddegree = False, sqroot = False, cbroot = False, comb = False, comb3 = False, trigo=False, expo = False, hyperb=False,combtrigo=False):
     """INPUT : matrix tx = [x1, x2, ... xn]
        OUTPUT : matrix = [1, x1, x1^2, ... x1^degree,   x2, x2^2, ..., x2^ degree, ...   , xn, xn^2, ... , x^degree]
        
@@ -93,6 +93,9 @@ def build_data(tx, degree = False, adddegree = False, sqroot = False, cbroot = F
         
     if trigo:
         output = np.c_[output, build_trigo(tx)]
+        
+    if expo:
+        output = np.c_[output, np.exp(tx)]
         
     if hyperb:
         output = np.c_[output, build_hyperb(tx)]

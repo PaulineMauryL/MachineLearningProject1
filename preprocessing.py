@@ -61,7 +61,25 @@ def build_poly(tx, degree):
     
     return out
 
-def build_data(tx, degree = False, adddegree = False, sqroot = False, cbroot = False, comb = False, comb3 = False, trigo=False, expo = False, hyperb=False,combtrigo=False):
+def build_fraction(tx):
+    """INPUT : matrix tx = [x1, x2, ..., xn]
+               with xi a column vector
+               
+       OUTPUT : [x1/x2 x1/x3 ... x1/xn, x2/x1, x2/x3, ..., x2/xn, ..., ..., xn/xn-1]
+       """
+    n = tx.shape[1] #n = nb_column
+    out = tx[:,0]
+    
+    for i in np.arange(n):
+        col = tx[:,i]
+        sub_matrix = np.c_[ tx[:,0:i], tx[:,i+1:n]]
+        to_add = np.reciprocal( sub_matrix ) * col[:,np.newaxis] #Note that the order of matrix matters
+        out = np.c_[out, to_add]
+        
+    end = out.shape[1]
+    return out[:,1:end]
+
+def build_data(tx, degree = False, adddegree = False, inv = False, frac = False, sqroot = False, cbroot = False, comb = False, comb3 = False, trigo=False, expo = False, hyperb=False,combtrigo=False):
     """INPUT : matrix tx = [x1, x2, ... xn]
        OUTPUT : matrix = [1, x1, x1^2, ... x1^degree,   x2, x2^2, ..., x2^ degree, ...   , xn, xn^2, ... , x^degree]
        
@@ -78,6 +96,12 @@ def build_data(tx, degree = False, adddegree = False, sqroot = False, cbroot = F
                 output = np.c_[output,build_poly(tx,i+1)]
         else:
             output = np.c_[output, build_poly(tx,degree)]
+    
+    if inv:
+        output = np.c_[output, np.reciprocal(tx)]
+    
+    if frac:
+        output = np.c_[output, build_fraction(tx)]
     
     if sqroot:
         output = np.c_[output, build_sqrt(tx)]

@@ -61,7 +61,7 @@ def build_poly(tx, degree):
     
     return out
 
-def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = False, trigo=False,hyperb=False,combtrigo=False):
+def build_data(tx, degree = False, adddegree = False, sqroot = False, cbroot = False, comb = False, comb3 = False, trigo=False,hyperb=False,combtrigo=False):
     """INPUT : matrix tx = [x1, x2, ... xn]
        OUTPUT : matrix = [1, x1, x1^2, ... x1^degree,   x2, x2^2, ..., x2^ degree, ...   , xn, xn^2, ... , x^degree]
        
@@ -81,9 +81,15 @@ def build_data(tx, degree = False, adddegree = False, sqroot = False, comb = Fal
     
     if sqroot:
         output = np.c_[output, build_sqrt(tx)]
+    
+    if cbroot:
+        output = np.c_[output, np.cbrt(tx)]
         
     if comb:
         output = np.c_[output, build_lin_com(tx)]
+    
+    if comb3:
+        output = np.c_[output, build_all_deg_3(tx)]
         
     if trigo:
         output = np.c_[output, build_trigo(tx)]
@@ -125,8 +131,15 @@ def build_sqrt(tx):
        
        Note : if the value x is negativ, compute -|x|^0.5
        """
-    out = np.where(tx <0 , -np.power(-tx,0.5), np.power(tx,0.5))
+    out = np.where(tx < 0, -np.sqrt( np.abs(tx) ), np.sqrt(np.abs(tx)))
     return out
+
+#def build_cbrt(tx):
+#    """INPUT : matrix tx = [x1, x2, ..., xn]
+#       OUTPUT : matrix tx = [x1^(1/3), x2^(1/3), ..., xn^(1/3)]
+#   """
+#    return np.cbrt(tx)
+    
        
 def add_data(tx, tx_to_add_to_tx):
     return np.c_[tx, tx_to_add_to_tx]
@@ -178,6 +191,15 @@ def build_lin_com_deg_old(tx,deg = 2):
     return out[:,1:end]
 
 def build_lin_com_deg(tx,deg = 2):
+    """ input : matrix tx = [x1 x2 ... xn] and degree desired
+                with xi the column vector of tx
+                
+        output : every combination of each col to the power deg multiplied with one other column
+                 i.e. output = [ x1^deg x2, x1^deg x3, ... , x1^deg xn, 
+                                 x2^deg x1, x2^deg x3, ..., x2^deg xn,
+                                 ...
+                                 xn^deg x1, xn^deg x2, ..., xn^deg xn-1 ]
+    """
     n = tx.shape[1]
     out = np.ones((tx.shape[0],1))
     
@@ -193,7 +215,11 @@ def build_lin_com_deg(tx,deg = 2):
 def build_all_deg_3(tx):
     """
     input : tx = [x1 x2 ... xn]
-    output : build of combination of degree 3 : x1 x2 x3, x1^2 x3, ... 
+            with xi a column vector
+            
+    output : matrix of all combination of degree 3 : x1 x2 x3, x1^2 x3, ... 
+             Note : it doesn't include cubic value (i.e. NO x1^3 !)
+             
     Note : tx must at least have 3 columns
     """
     lin3 = build_lin_com3(tx)

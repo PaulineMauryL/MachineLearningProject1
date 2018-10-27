@@ -2,20 +2,23 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-def dataprocessing(cat_0_tri,cat_0_tei,idx_0_tr, idx_0_te,deg0=0,adddegree0=0,sqrt0=0,comb0=0,trigo=0,hyperb=0,combtrigo=0):
+def dataprocessing(cat_0_tri, degree):
     
-    cat_0_tr, cat_0_te = remove_999col(cat_0_tri, cat_0_tei)
-
-    to_add_cat_0_tr = build_data(cat_0_tr,deg0,adddegree0,sqrt0,comb0,trigo,hyperb,combtrigo)
-    to_add_cat_0_te = build_data(cat_0_te,deg0,adddegree0,sqrt0,comb0,trigo,hyperb,combtrigo)
+    #cat_0_tr, cat_0_te = remove_999col(cat_0_tri, cat_0_tei)
+    cat_0_tr = remove_999col_TRAIN(cat_0_tri)
+    
+    
+    to_add_cat_0_tr = build_data(cat_0_tr, degree, adddegree = True, inv = True, frac = True, sqroot = True, sqrootpos = True, cbroot = True, comb = True, comb3 = True, trigo=True, expo = False, hyperb=False,combtrigo=False)
+    
+    #to_add_cat_0_te = build_data(cat_0_te,deg0,adddegree0,sqrt0,comb0,trigo,hyperb,combtrigo)
     trx_0i = add_data(cat_0_tr,to_add_cat_0_tr)
-    tex_0i = add_data(cat_0_te,to_add_cat_0_te)
+    #tex_0i = add_data(cat_0_te,to_add_cat_0_te)
 
     trx_0ii, mean0, std0 = standardize_train(trx_0i)
     trx_0 = add_bias(trx_0ii)
-    tex_0 = add_bias(standardize_test(tex_0i, mean0, std0))
+    #tex_0 = add_bias(standardize_test(tex_0i, mean0, std0))
     
-    return trx_0, tex_0
+    return trx_0 #tex_0
 
 def split_categories(x_test):
     jet_num = 22
@@ -36,9 +39,13 @@ def standardize_train(x):
     ''' standardize training set
     '''
     centered_data = x - np.mean(x, axis=0)
-    std_data = centered_data / np.std(x, axis=0)
     
-    return std_data, np.mean(x, axis=0), np.std(x, axis=0)
+    std_dev = np.std(x, axis=0)
+    std_dev[std_dev == 0] = 1
+    
+    std_data = centered_data / std_dev
+    
+    return std_data, np.mean(x, axis=0), std_dev
 
 def standardize_test(x, mean, std):
     ''' standardize test set with same values as training set
@@ -265,6 +272,17 @@ def remove_999col(input_train,input_test):
     x_test_no_999col = np.delete(input_test,ind,axis=1)
     
     return  x_train_no_999col,x_test_no_999col
+
+def remove_999col_TRAIN(input_train):
+    idx = np.isin(input_train, -999.0)
+    idx = np.any(idx,axis=0)
+    ind = np.nonzero(idx)[0]
+    
+    x_train_no_999col = np.delete(input_train,ind,axis=1)
+    
+    return  x_train_no_999col
+
+
 
 def build_trigo(tx,num=0):
     if num:

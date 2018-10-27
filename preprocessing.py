@@ -73,7 +73,7 @@ def build_fraction(tx):
     for i in np.arange(n):
         col = tx[:,i]
         sub_matrix = np.c_[ tx[:,0:i], tx[:,i+1:n]]
-        to_add = np.reciprocal( sub_matrix ) * col[:,np.newaxis] #Note that the order of matrix matters
+        to_add = build_inv( sub_matrix ) * col[:,np.newaxis] #Note that the order of matrix matters
         out = np.c_[out, to_add]
         
     end = out.shape[1]
@@ -97,8 +97,8 @@ def build_data(tx, degree = False, adddegree = False, inv = False, frac = False,
         else:
             output = np.c_[output, build_poly(tx,degree)]
     
-    if inv:
-        output = np.c_[output, np.reciprocal(tx)]
+    if inv: #if el = 0, return 0 instead
+        output = np.c_[output, build_inv(tx)]
     
     if frac:
         output = np.c_[output, build_fraction(tx)]
@@ -276,5 +276,25 @@ def build_trigo(tx,num=0):
 def build_hyperb(tx):
     out = np.c_[np.cosh(tx),np.sinh(tx),np.tanh(tx)]
     return out
+
+def build_inv(tx):
+    """ input tx = [x1 x2 ... xn]
+    
+        output = [1/x1 1/x2 ... 1/xn]
+        
+        Note : if el == 0, return 0 instead
+        """
+    nb_row = tx.shape[0]
+    nb_col = tx.shape[1]
+
+    out = np.zeros((nb_row,nb_col))
+
+    for i in np.arange(nb_row):
+        for j in np.arange(nb_col):
+            if np.abs(tx[i,j]) > 1e-10:
+                out[i,j] = np.reciprocal(tx[i,j])
+                
+    return out
+    
     
 

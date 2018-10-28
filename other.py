@@ -67,7 +67,7 @@ def replace_1(input_train):
 
 def accuracy(y_test, x_test, w):
     y_pred = predict_labels(w, x_test) # Pas de "-", on le voit grace à l'accuracy calculée pour les train data ci-dessous
-    print(y_pred[:10],y_test[:10])
+    #print(y_pred[:10],y_test[:10])
     accuracy = sum(y_pred == y_test)/len(y_test)
     return accuracy
 

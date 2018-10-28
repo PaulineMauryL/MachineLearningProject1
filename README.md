@@ -47,20 +47,21 @@ Methods given by the course for project 1.
 
 ## Authors
 
-Jérôme Savary
-Audrey Jordan
-Pauline Maury Laribière
+* Jérôme Savary
+
+* Audrey Jordan
+
+* Pauline Maury Laribière
 
 
 ## Acknowledgments
 
+* [Physics background](https://higgsml.lal.in2p3.fr/files/2014/04/documentation_v1.8.pdf)
 
-Physics background: https://higgsml.lal.in2p3.fr/files/2014/04/documentation_v1.8.pdf
+* [Feature Engineering](https://machinelearningmastery.com/discover-feature-engineering-how-to-engineer-features-and-how-to-get-good-at-it/)
 
-Feature Engineering: https://machinelearningmastery.com/discover-feature-engineering-how-to-engineer-features-and-how-to-get-good-at-it/
+* [Advice for applying Machine Learning](http://cs229.stanford.edu/materials/ML-advice.pdf)
 
-Advice for applying Machine Learning: http://cs229.stanford.edu/materials/ML-advice.pdf
+* [A Few Useful Things to Know about Machine Learning](https://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf)
 
-A Few Useful Things to Know about Machine Learning: https://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf
-
-Machine Learning CS-433 course from M. Jaggi: https://mlo.epfl.ch/page-157255-en-html/
+* [Machine Learning CS-433 course from M. Jaggi](https://mlo.epfl.ch/page-157255-en-html/)

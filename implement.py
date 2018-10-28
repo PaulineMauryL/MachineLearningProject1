@@ -68,7 +68,7 @@ def modeling(trx_0,y_train_0,num_intervals_lambda=1,nb_fold=1,nb_crossvalid=1,mi
     lambd_0 = lambdas_0[ind_0]
     min_valid_r_loss_0 = valid_r_0[ind_0]
     #print("The best lambda is",lambd_0,"with valid test",min_valid_r_loss_0)
-    print("Best lambda = {} \n".format(lambd_0))
+    #print("Best lambda = {} \n".format(lambd_0))
     w_best_0, lost_best_0 = ridge_regression(y_train_0, trx_0, lambd_0)
     #print("And the loss on the whole train data is", lost_best_0)
     

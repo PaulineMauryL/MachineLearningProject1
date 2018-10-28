@@ -5,13 +5,13 @@ Machine Learning algorithm using Ridge regression and selected features to find 
 
 ### Prerequisites
 
-Download training and testing set from Kaggle. 
+Download [training and testing set](https://www.kaggle.com/c/epfml18-higgs) from Kaggle. 
 
 
 
 ## Project files
 
-# run.py
+### run.py
 **INPUT:** training and testing data in the same folder
 
 **OUTPUT:** prediction of the classification of the test set
@@ -21,7 +21,7 @@ Download training and testing set from Kaggle.
 Compute the weight according to the selected features.
 Classify the test set.
 
-# implementation.py
+### implementation.py
 Implementation of the methods seen in class
  - least_squares_GD(y, tx, initial_w, max_iters, gamma)
  - least_squares_SGD(y, tx, initial_w, max_iters, gamma)
@@ -32,26 +32,27 @@ Implementation of the methods seen in class
 all methods return (w, loss): the last weight vector and the corresponding loss 
 function
 
-# preprocessing.py
+### preprocessing.py
 Implements the function used by run.py to preprocess the data
  - split_categories: split the dataset according to the jet number value
  - processing: pre-process the input, calls build_data and standardize
  - build_data: method for feature engineering, builds data
 
 
-#proj1_helpers
-Methods given by the course for project 1.
+### proj1_helpers
+
+Methods provided by the [course](https://mlo.epfl.ch/page-157255-en-html/) for project 1.
 
 
 
 
 ## Authors
 
-* Jérôme Savary
+* Jérôme Savary -*MT_MA1*- 
 
-* Audrey Jordan
+* Audrey Jordan -*MT_MA3*-
 
-* Pauline Maury Laribière
+* Pauline Maury Laribière -*MT_MA3*- [PaulineMauryL](https://github.com/PaulineMauryL)
 
 
 ## Acknowledgments

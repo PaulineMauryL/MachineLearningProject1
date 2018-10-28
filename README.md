@@ -9,12 +9,38 @@ Download training and testing set from Kaggle.
 
 
 
-## Running the project
+## Project files
 
-Launch the run.py file.
-
+# run.py
 INPUT: training and testing data in the same folder
 OUTPUT: prediction of the classification of the test set
+Load the data and divide it in 4 categories. 
+Pre-process each category.
+
+Compute the weight according to the selected features.
+Classify the test set.
+
+# implementation.py
+Implementation of the methods seen in class
+ - least_squares_GD(y, tx, initial_w, max_iters, gamma)
+ - least_squares_SGD(y, tx, initial_w, max_iters, gamma)
+ - least_squares(y, tx)
+ - ridge_regression(y, tx, lambda_)
+ - logistic regression(y, tx, initial_w, max_iters, gamma)
+ - reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma)
+all methods return (w, loss): the last weight vector and the corresponding loss 
+function
+
+# preprocessing.py
+Implements the function used by run.py to preprocess the data
+ - split_categories: split the dataset according to the jet number value
+ - processing: pre-process the input, calls build_data and standardize
+ - build_data: method for feature engineering, builds data
+
+
+#proj1_helpers
+Methods given by the course for project 1.
+
 
 
 

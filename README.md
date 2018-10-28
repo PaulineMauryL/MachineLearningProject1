@@ -12,8 +12,9 @@ Download training and testing set from Kaggle.
 ## Project files
 
 # run.py
-INPUT: training and testing data in the same folder
-OUTPUT: prediction of the classification of the test set
+\textbf{INPUT:} training and testing data in the same folder
+
+\textbf{OUTPUT:} prediction of the classification of the test set
 Load the data and divide it in 4 categories. 
 Pre-process each category.
 
@@ -46,9 +47,9 @@ Methods given by the course for project 1.
 
 ## Authors
 
-Jérôme Savary
+JÃ©rÃ´me Savary
 Audrey Jordan
-Pauline Maury Laribière
+Pauline Maury LaribiÃ¨re
 
 
 ## Acknowledgments

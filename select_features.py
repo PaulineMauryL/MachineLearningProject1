@@ -119,11 +119,10 @@ def best_set_of_features(x_train, y_train, num_intervals_lambda, nb_fold, nb_cro
             y_valid_k = y_train[k*nb_elem:(k+1)*nb_elem]           
             x_train_k = np.concatenate([x_train[0:k*nb_elem][:], x_train[(k+1)*nb_elem:][:]])
             y_train_k = np.concatenate([y_train[0:k*nb_elem],    y_train[(k+1)*nb_elem:]   ])
+            
             x_acc = np.concatenate([x_valid_k[:,features_idx], x_valid_k[:, feature:feature+1]], axis = 1)
             
-            w_k, _ = ridge_regression(y_valid_k, x_valid_k, lambda_best_k)
-            
-            acc.append(accuracy(y_valid_k, x_acc, w))
+            acc.append(accuracy(y_valid_k, x_acc, w_best))
             
         print("\n Accuracy = {} with feat {}".format(np.mean(acc), feature) )
         print("Nb of features = {}".format(i) )

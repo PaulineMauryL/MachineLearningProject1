@@ -12,9 +12,9 @@ Download [training and testing set](https://www.kaggle.com/c/epfml18-higgs) from
 ## Project files
 
 ### run.py
-**INPUT:** training and testing data in the same folder
+**Input:** training and testing data in the same folder
 
-**OUTPUT:** prediction of the classification of the test set
+**Output:** prediction of the classification of the test set
 * Load the data and divide it in 4 categories. 
 * Pre-process each category.
 

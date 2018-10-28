@@ -39,7 +39,7 @@ Implements the function used by run.py to preprocess the data
  - build_data: method for feature engineering, builds data
 
 
-### proj1_helpers
+### proj1_helpers.py
 
 Methods provided by the [course](https://mlo.epfl.ch/page-157255-en-html/) for project 1.
 

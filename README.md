@@ -12,11 +12,11 @@ Download training and testing set from Kaggle.
 ## Project files
 
 # run.py
-\textbf{INPUT:} training and testing data in the same folder
+**INPUT:** training and testing data in the same folder
 
-\textbf{OUTPUT:} prediction of the classification of the test set
-Load the data and divide it in 4 categories. 
-Pre-process each category.
+**OUTPUT:** prediction of the classification of the test set
+* Load the data and divide it in 4 categories. 
+* Pre-process each category.
 
 Compute the weight according to the selected features.
 Classify the test set.

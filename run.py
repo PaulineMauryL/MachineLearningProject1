@@ -1,7 +1,7 @@
 from proj1_helpers import load_csv_data, create_csv_submission, predict_labels
 from preprocessing import dataprocessing, split_categories
 from implementations import ridge_regression
-
+import numpy as np
 
 # Load training input
 y_train, x_train, ids_train = load_csv_data('train.csv', sub_sample=False)
@@ -25,10 +25,10 @@ cat_2_tr, cat_2_te = dataprocessing(cat_2_tr, cat_2_te, degree = 5, adddegree = 
 cat_3_tr, cat_3_te = dataprocessing(cat_3_tr, cat_3_te, degree = 5, adddegree = True, inv = True, frac = False, sqroot = True, sqrootpos = True, cbroot = True, comb = True, comb3 = False, trigo=True, expo = False, hyperb=False,combtrigo=False)
 
 # Only keep useful columns of each category
-feat_0 = [137, 94, 293, 104, 21, 18, 35,30,91,143,151,242,154,138,97,264,19,251,158,224,296,211]
-feat_1 = [114, 40,134,403,189,192,412,22,342,213,233,88,111,211,23,228,190,194,82,206,73,295,54]
-feat_2 = [313,142,258,637,153,284,423,227,49,165,145,29,231,42,156,30,226,170,58,485,384,413,35,91,171,309,169,254,47,96,198,162,478,45]
-feat_3 = [313, 338,142,258,145,234,187,503,644,618,284,147,240,411,31,29,555,119,634,408,402]
+feat_0 = [0, 137, 94, 293, 104, 21, 18, 35,30,91,143,151,242,154,138,97,264,19,251,158,224,296,211]
+feat_1 = [127, 114, 40,134,403,189,192,412,22,342,213,233,88,111,211,23,228,190,194,82,206,73,295,54]
+feat_2 = [338, 313,142,258,637,153,284,423,227,49,165,145,29,231,42,156,30,226,170,58,485,384,413,35,91,171,309,169,254,47,96,198,162,478,45]
+feat_3 = [0, 313, 338,142,258,145,234,187,503,644,618,284,147,240,411,31,29,555,119,634,408,402]
 
 cat_0_tr = cat_0_tr[:,feat_0]
 cat_1_tr = cat_1_tr[:,feat_1]
@@ -69,4 +69,4 @@ y_pred = y_unordered[order_idx]
 
 
 # Create submission
-create_csv_submission(ids_test, y_pred, "submission")
+create_csv_submission(ids_test, y_pred, "submission.csv")

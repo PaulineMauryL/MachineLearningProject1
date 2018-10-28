@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 def dataprocessing(cat_0_tri, cat_0_tei, degree, adddegree, inv, frac, sqroot, sqrootpos, cbroot, comb, comb3, trigo, expo, hyperb, combtrigo):
-    
+    '''Pre-processing of the data, load the useful features'''
     cat_0_tr, cat_0_te = remove_999col(cat_0_tri, cat_0_tei)
     
     to_add_cat_0_tr = build_data(cat_0_tr, degree, adddegree, inv, frac, sqroot, sqrootpos, cbroot, comb, comb3, trigo, expo, hyperb, combtrigo) 
@@ -14,12 +14,13 @@ def dataprocessing(cat_0_tri, cat_0_tei, degree, adddegree, inv, frac, sqroot, s
 
     trx_0ii, mean0, std0 = standardize_train(trx_0i)
     trx_0 = add_bias(trx_0ii)
-    
+
     tex_0 = add_bias(standardize_test(tex_0i, mean0, std0))
     
     return trx_0, tex_0
 
 def split_categories(x_test):
+	'''Split dataset in 4 different categories according to their jet number (column 22)'''
     jet_num = 22
     cat_0 = np.delete(x_test[x_test[:, jet_num] == 0],[22,29],axis=1)
     cat_1 = np.delete(x_test[x_test[:, jet_num] == 1],22,axis=1)
@@ -102,31 +103,31 @@ def build_data(tx, degree = False, adddegree = False, inv = False, frac = False,
                 output = np.c_[output,build_poly(tx,i+1)]
         else:
             output = np.c_[output, build_poly(tx,degree)]
-    
+
     if inv: #if el = 0, return 0 instead
         output = np.c_[output, build_inv(tx)]
-    
+
     if frac:
         output = np.c_[output, build_fraction(tx)]
     
     if sqroot:
         output = np.c_[output, build_sqrt(tx)]
-        
+       
     if sqrootpos: #make sqrt( absolute_value ( tx ) )
         output = np.c_[output, np.sqrt( np.abs (tx) )]
-    
+  
     if cbroot:
         output = np.c_[output, np.cbrt(tx)]
-        
-    if comb:
+      
+    if comb:        
         output = np.c_[output, build_lin_com(tx)]
-    
+  
     if comb3:
         output = np.c_[output, build_all_deg_3(tx)]
         
     if trigo:
         output = np.c_[output, build_trigo(tx,0)]
-        
+     
     if expo:
         output = np.c_[output, np.exp(tx)]
         
@@ -263,6 +264,7 @@ def build_all_deg_3(tx):
     return np.c_[lin3,lin12]
 
 def remove_999col(input_train,input_test):
+	'''Remove columns that contain -999 in each categories'''
     idx = np.isin(input_train, -999.0)
     idx = np.any(idx,axis=0)
     ind = np.nonzero(idx)[0]
@@ -271,15 +273,6 @@ def remove_999col(input_train,input_test):
     x_test_no_999col = np.delete(input_test,ind,axis=1)
     
     return  x_train_no_999col,x_test_no_999col
-
-def remove_999col_TRAIN(input_train):
-    idx = np.isin(input_train, -999.0)
-    idx = np.any(idx,axis=0)
-    ind = np.nonzero(idx)[0]
-    
-    x_train_no_999col = np.delete(input_train,ind,axis=1)
-    
-    return  x_train_no_999col
 
 
 
@@ -314,4 +307,3 @@ def build_inv(tx):
     return out
     
     
-

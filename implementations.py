@@ -315,7 +315,7 @@ def logreg_hyperparam(gamma, nb_fold, nb_crossvalid, max_iters, x_train, y_train
             x_train_k = np.concatenate([x_train[0:k*nb_elem][:], x_train[(k+1)*nb_elem:][:]])
             y_train_k = np.concatenate([y_train[0:k*nb_elem],    y_train[(k+1)*nb_elem:]   ]) 
                                         
-            w, loss_tr = reg_logistic_regression(y_train_k, x_train_k, lambda_ w_initial, max_iters, gamma)                
+            w, loss_tr = reg_logistic_regression(y_train_k, x_train_k, lambda_, w_initial, max_iters, gamma)                
             loss_train[i][k] = loss_tr
             loss_valid[i][k] = compute_logreg_reg_loss(y_valid_k, x_valid_k, w)
             

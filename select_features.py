@@ -88,6 +88,7 @@ def best_feature(x_train, y_train, nb_features_already, features_idx,lambda_0):
 
 
 def best_set_of_features(x_train, y_train, num_intervals_lambda, nb_fold, nb_crossvalid, min_range, max_range):
+    print("ok")
     first_min_feat = first_best(x_train, y_train, lambda_0 = 0.001)
     nb_features_already =1
     #print("first_mean_feat {}",format(first_min_feat))
@@ -102,7 +103,7 @@ def best_set_of_features(x_train, y_train, num_intervals_lambda, nb_fold, nb_cro
     
     accuracies = []
     
-    for i in range(50):
+    for i in range(100):
         nb_features_already += 1
         #print("best lambda",lambda_best)
         feature = best_feature(x_train, y_train, nb_features_already, features_idx, lambda_best)
@@ -119,11 +120,10 @@ def best_set_of_features(x_train, y_train, num_intervals_lambda, nb_fold, nb_cro
             y_valid_k = y_train[k*nb_elem:(k+1)*nb_elem]           
             x_train_k = np.concatenate([x_train[0:k*nb_elem][:], x_train[(k+1)*nb_elem:][:]])
             y_train_k = np.concatenate([y_train[0:k*nb_elem],    y_train[(k+1)*nb_elem:]   ])
+            
             x_acc = np.concatenate([x_valid_k[:,features_idx], x_valid_k[:, feature:feature+1]], axis = 1)
             
-            w_k, _ = ridge_regression(y_valid_k, x_valid_k, lambda_best_k)
-            
-            acc.append(accuracy(y_valid_k, x_acc, w))
+            acc.append(accuracy(y_valid_k, x_acc, w_best))
             
         print("\n Accuracy = {} with feat {}".format(np.mean(acc), feature) )
         print("Nb of features = {}".format(i) )
@@ -133,9 +133,9 @@ def best_set_of_features(x_train, y_train, num_intervals_lambda, nb_fold, nb_cro
         ##if accuracy starts decreasing
         if(i > 4 and accuracies[-1] < accuracies[-2] and accuracies[-1] < accuracies[-3] ):
             print("Break, accuracy is decreasing since two lasts features (don't take last feature of list)")
-            return features_idx, lambdas
+            return features_idx, lambdas, accuracies
         else:
             features_idx.append(feature)
         
     print("Algo end before best accuracy")
-    return features_idx, lambdas
+    return features_idx, lambdas, accuracies

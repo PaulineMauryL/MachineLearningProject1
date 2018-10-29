@@ -8,7 +8,6 @@ Machine Learning algorithm using Ridge regression and selected features to find 
 Download [training and testing set](https://www.kaggle.com/c/epfml18-higgs) from Kaggle. 
 
 
-
 ## Project files
 
 ### run.py
@@ -33,8 +32,9 @@ all methods return (w, loss): the last weight vector and the corresponding loss
 function
 
 ### preprocessing.py
-Implements the function used by run.py to preprocess the data
- - split_categories: split the dataset according to the jet number value
+Implements the functions used by run.py to preprocess the data
+ - split_categories: - split the dataset according to the jet number value (PRI_jet_num)
+                     - for each category, remove the features containing '-999' values
  - processing: pre-process the input, calls build_data and standardize
  - build_data: method for feature engineering, builds data
 
@@ -42,8 +42,6 @@ Implements the function used by run.py to preprocess the data
 ### proj1_helpers.py
 
 Methods provided by the [course](https://mlo.epfl.ch/page-157255-en-html/) for project 1.
-
-
 
 
 ## Authors

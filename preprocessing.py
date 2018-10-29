@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 def dataprocessing(cat_0_tri, cat_0_tei, degree, adddegree, inv, frac, sqroot, sqrootpos, cbroot, comb, comb3, trigo, expo, hyperb, combtrigo):
     '''Pre-processing of the data, load the useful features'''
     cat_0_tr, cat_0_te = remove_999col(cat_0_tri, cat_0_tei)
+    print("\n\cat_0_tr size = ", cat_0_tr.shape) #to remove
     
     to_add_cat_0_tr = build_data(cat_0_tr, degree, adddegree, inv, frac, sqroot, sqrootpos, cbroot, comb, comb3, trigo, expo, hyperb, combtrigo) 
     to_add_cat_0_te = build_data(cat_0_te, degree, adddegree, inv, frac, sqroot, sqrootpos, cbroot, comb, comb3, trigo, expo, hyperb, combtrigo)
@@ -20,7 +21,7 @@ def dataprocessing(cat_0_tri, cat_0_tei, degree, adddegree, inv, frac, sqroot, s
     return trx_0, tex_0
 
 def split_categories(x_test):
-	'''Split dataset in 4 different categories according to their jet number (column 22)'''
+    '''Split dataset in 4 different categories according to their jet number (column 22)'''
     jet_num = 22
     cat_0 = np.delete(x_test[x_test[:, jet_num] == 0],[22,29],axis=1)
     cat_1 = np.delete(x_test[x_test[:, jet_num] == 1],22,axis=1)
@@ -264,7 +265,7 @@ def build_all_deg_3(tx):
     return np.c_[lin3,lin12]
 
 def remove_999col(input_train,input_test):
-	'''Remove columns that contain -999 in each categories'''
+    '''Remove columns that contain -999 in each categories'''
     idx = np.isin(input_train, -999.0)
     idx = np.any(idx,axis=0)
     ind = np.nonzero(idx)[0]

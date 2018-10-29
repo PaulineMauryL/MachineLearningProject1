@@ -4,8 +4,12 @@ import math
 from other import batch_iter
 from proj1_helpers import load_csv_data, predict_labels, create_csv_submission
 
+#############################################################
 # -----------------------------------------------------------
 # --------------------Least squares -------------------------
+#------------------------------------------------------------
+#############################################################
+
 # Common functions
 def compute_gradient_least_squares(y, tx, w):
     """Compute the gradient of least square."""
@@ -27,7 +31,7 @@ def least_squares(y, tx):
     a = tx.T.dot(tx) 
     b = tx.T.dot(y)
     w = np.linalg.solve(a, b)                #p.7 du cours least squares
-    loss = compute_loss_ls(y, tx, w)                 #p.3 du cours least squares
+    loss = compute_loss_ls(y, tx, w)         #p.3 du cours least squares
     return w, loss
 
 # Gradient descent least squares
@@ -35,14 +39,14 @@ def least_squares_GD(y, tx, w_initial, max_iters, gamma):
     """Gradient descent algorithm with least squares."""
     w = w_initial
     for n_iter in range(max_iters):
-        # compute gradient and error
         grad = compute_gradient_least_squares(y, tx, w)
-        # gradient w by descent update
         w = w - (gamma * grad)  
     loss = compute_loss_ls(y, tx, w)
     return w, loss
 
+
 def ls_gd_hyperparam(gammas, nb_fold,nb_crossvalid,max_iters, x_train, y_train,w_initial):
+    """Compute cross validation using Least Square with gradient descent """
     loss_valid = np.zeros([len(gammas), nb_fold])
     loss_train = np.zeros([len(gammas), nb_fold])
     
@@ -71,18 +75,17 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     batch_size = 1
     
     for n_iter in range(max_iters):
-        #print("boucle d'iteration")
         for y_batch, tx_batch in batch_iter(y, tx, batch_size, 10,False):
-            #print("boucle de batch")
             # compute a stochastic gradient and loss
             grad = compute_gradient_least_squares(y_batch, tx_batch, w)
             # update w through the stochastic gradient update
             w = w - gamma * grad
             # calculate loss
-    loss = compute_loss_ls(y, tx, w)                                 #TO CHECK p.3 least squares
+    loss = compute_loss_ls(y, tx, w)
     return w, loss
 
 def ls_sgd_hyperparam(gammas, nb_fold, max_iters,x_train, y_train, w_initial):
+    """ Compute loss for train and validation using least square gradient descend"""
     loss_valid = np.zeros([len(gammas), nb_fold])
     loss_train = np.zeros([len(gammas), nb_fold])
     
@@ -105,14 +108,14 @@ def ls_sgd_hyperparam(gammas, nb_fold, max_iters,x_train, y_train, w_initial):
     return lvalid, ltrain,w
 
 
+#############################################################
 # -----------------------------------------------------------
 # -------------------- Ridge regression ---------------------
-
-# Je suis un peu confuse. Est ce que ce qu'il veut c'est ça ou bien ce que j'ai fait aux fonctions ridge_GD et ridge_SGD ?? 
-# ridge_GD et ridge_SGD sont juste en-dessous
+#------------------------------------------------------------
+#############################################################
 
 def compute_loss_ridge(y, tx, w, lambda_):
-    """Calculate the loss of ridge regression."""
+    """Calculate the loss for ridge regression."""
     err = y - tx.dot(w)
     loss = (1/2) * np.mean(err**2) + lambda_ * (np.linalg.norm(w,2))**2   #TO CHECK p.3 ridge regression
     return loss
@@ -149,6 +152,7 @@ def ridge_GD(y, tx, initial_w, max_iters, gamma, lambda_):
     return w, loss
 
 def ridge_gd_hyperparam(gamma, nb_fold, nb_crossvalid, max_iters, x_train, y_train, w_initial, lambdas):
+    """ Compute loss for train and validation dataset using ridge gradient descend """
     loss_valid = np.zeros([len(gammas), nb_fold])
     loss_train = np.zeros([len(gammas), nb_fold])
     
@@ -187,6 +191,7 @@ def ridge_SGD(y, tx, initial_w, max_iters, gamma, lambda_):
     return w, loss
 
 def ridge_sgd_hyperparam(gamma, nb_fold, nb_crossvalid, max_iters, x_train, y_train, w_initial, lambdas):
+    """ Compute loss for train and validation dataset using ridge stochastic gradient descent"""
     loss_valid = np.zeros([len(gammas), nb_fold])
     loss_train = np.zeros([len(gammas), nb_fold])
     
@@ -207,15 +212,17 @@ def ridge_sgd_hyperparam(gamma, nb_fold, nb_crossvalid, max_iters, x_train, y_tr
     return loss_valid, loss_train,w
 
 
-
-
+#############################################################
 # -----------------------------------------------------------
 # --------------------Logistic regresion --------------------
+#------------------------------------------------------------
+#############################################################
+
 def sigmoid(tx, w):
     """Compute sigmoid function"""
     z = np.array(np.exp(-tx.dot(w)))
     q = 1./(1+z)
-    p = np.where(q < 0.99999999999, q, 0.99999999999)
+    p = np.where(q < 0.99999999999, q, 0.99999999999) #To avoid rounded values
     return p
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma): #SGD  (GD easy to implement from here)
@@ -246,6 +253,7 @@ def compute_logreg_grad(y, tx, w):
     return grad
 
 def logreg_hyperparam(gammas, nb_fold, nb_crossvalid, max_iters, x_train, y_train, w_initial):
+    """ Compute loss for train and validation data set using logistic regretion"""
     loss_valid = np.zeros([len(gammas), nb_fold])
     loss_train = np.zeros([len(gammas), nb_fold])
     
@@ -268,13 +276,15 @@ def logreg_hyperparam(gammas, nb_fold, nb_crossvalid, max_iters, x_train, y_trai
     return lvalid, ltrain, w
 
 
-
+#############################################################
 # -----------------------------------------------------------
-# ------------Regularized Logistic regresion ----------------
+# ------------Regularized Logistic regression ----------------
+#------------------------------------------------------------
+#############################################################
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
-    """Stochastic Gradient Descent algorithm with REGULARIZED logistic regression."""
-    """Required by project description"""
+    """Stochastic Gradient Descent algorithm with REGULARIZED logistic regression.
+       Required by project description"""
     w = initial_w
     batch_size=1
     for n_iter in range(max_iters):
@@ -288,7 +298,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     return w, loss
 
 def compute_logreg_reg_loss(y, tx, w, lambda_):
-    """Compute lorr of regularized logistic regression"""
+    """Compute loss of regularized logistic regression"""
     reg = ( lambda_/(2*len(y)) ) * sum(w**2)
     loss = compute_logreg_loss(y, tx, w) + reg
     return loss
@@ -302,6 +312,7 @@ def compute_logreg_reg_grad(y, tx, w, lambda_):
 
 
 def logreg_hyperparam(gamma, nb_fold, nb_crossvalid, max_iters, x_train, y_train, w_initial, lambdas):
+    """ Compute loss for train and validation dataset using logistic regression """
     loss_valid = np.zeros([len(gammas), nb_fold])
     loss_train = np.zeros([len(gammas), nb_fold])
     
